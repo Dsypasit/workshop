@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS "cloud_pocket" (
     PRIMARY KEY ("id")
 )
 
-CREATE TABLE "txn" (
+CREATE TABLE IF NOT EXISTS "txn" (
     "id" int4 NOT NULL DEFAULT nextval('txn_id'::regclass)
     "timestamp" TIMESTAMP NOT NULL,
     "amount" NUMERIC NOT NULL,
