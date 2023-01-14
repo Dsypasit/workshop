@@ -15,11 +15,11 @@ CREATE TABLE IF NOT EXISTS "cloud_pocket" (
 )
 
 CREATE TABLE IF NOT EXISTS "txn" (
-    "id" int4 NOT NULL DEFAULT nextval('txn_id'::regclass)
+    "id" int4 NOT NULL DEFAULT nextval('txn_id'::regclass),
     "timestamp" TIMESTAMP NOT NULL,
     "amount" NUMERIC NOT NULL,
     "note" VARCHAR NOT NULL,
     "sender" int4 NOT NULL,
-    "receiver" int4 NOTN NULL,
+    "receiver" int4 NOT NULL,
     PRIMARY KEY ("id") 
 )
