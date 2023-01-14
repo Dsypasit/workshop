@@ -77,7 +77,7 @@ func TestCreatePocket_Error(t *testing.T) {
 				return db, err
 			},
 			`{"name": "pocket-name"}`,
-			someErr,
+			echo.NewHTTPError(http.StatusInternalServerError, "query row error"),
 		},
 		{"create with bad request",
 			func() (*sql.DB, error) {
