@@ -6,6 +6,7 @@ CREATE TABLE "accounts" (
     PRIMARY KEY ("id")
 );
 
+CREATE SEQUENCE IF NOT EXISTS pocket_id;
 CREATE TABLE "pockets" (
     "id" int4 NOT NULL DEFAULT nextval('pocket_id'::regclass),
     "balance" float8 NOT NULL DEFAULT 0,
@@ -13,5 +14,5 @@ CREATE TABLE "pockets" (
     "name" TEXT NOT NULL,
     "currency" TEXT NOT NULL,
     "category" TEXT NOT NULL,
-    PRIMARY KEY ("id"),
+    PRIMARY KEY ("id")
 );
