@@ -1,6 +1,7 @@
 package transfer
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -29,7 +30,9 @@ func (a *MockHandler) InsertTransaction(c echo.Context) error {
 	}
 	a.transferRes = TransferResponse{
 		ID_transaction: 1,
-		Amount:         100.00}
+		Amount:         100,
+		Note:           "note from req_transaction_want",
+	}
 	return nil
 }
 
@@ -44,10 +47,12 @@ func (a *MockHandler) ExpectedTocall(HandlerName string) {
 func TestTransferHandler(t *testing.T) {
 	// Arange
 
-	req_transaction_want_json := `{"sender":0, "receiver":1, "amount":100.00, "note":"note from req_transaction_want"}`
+	req_transaction_want_json := `{"sender":0,"receiver":1,"amount":100,"note":"note from req_transaction_want"}`
+	res_transaction_want_json := `{"id":1,"amount":100,"note":"note from req_transaction_want"}`
 	res_transaction_want := TransferResponse{
 		ID_transaction: 1,
-		Amount:         100.00,
+		Amount:         100,
+		Note:           "note from req_transaction_want",
 	}
 
 	// Act
@@ -60,10 +65,12 @@ func TestTransferHandler(t *testing.T) {
 
 	Hmock.ExpectedTocall("InsertTransaction")
 	err := Hmock.InsertTransaction(c)
+	res_transaction_got_json, _ := json.Marshal(Hmock.transferRes)
 
 	// Assert
-	assert.NoError(t, err)
-	assert.Equal(t, http.StatusCreated, c.Response().Status)
-	assert.Equal(t, res_transaction_want, Hmock.transferRes)
-
+	if assert.NoError(t, err) {
+		assert.Equal(t, http.StatusCreated, c.Response().Status)
+		assert.Equal(t, res_transaction_want, Hmock.transferRes)
+		assert.Equal(t, string(res_transaction_want_json), string(res_transaction_got_json))
+	}
 }

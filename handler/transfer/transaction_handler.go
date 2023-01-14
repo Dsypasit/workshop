@@ -18,7 +18,7 @@ type TransferRequest struct {
 type TransferResponse struct {
 	ID_transaction int64 `json:"id"`
 	//timestamp      time.Time `json:"timestamp"`
-	Amount float64 `json:"balance"`
+	Amount float64 `json:"amount"`
 	Note   string  `json:"note"`
 }
 
