@@ -36,7 +36,7 @@ func (h handler) Create(c echo.Context) error {
 	err = h.db.QueryRowContext(ctx, cStmt, req.Name).Scan(&resp.ID, &resp.Name)
 	if err != nil {
 		logger.Error("query row error", zap.Error(err))
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError, "query row error", err.Error())
 	}
 
 	logger.Info("create pocket successfully", zap.Int64("id", resp.ID))
