@@ -23,11 +23,11 @@ func New(db *sql.DB) *handler {
 }
 
 func (h handler) GetCloudPockets(c echo.Context) error {
-	var err error
-	var stmt *sql.Stmt
+	// var err error
+	// var stmt *sql.Stmt
 	pockets := []cloudpocket{}
 
-	stmt, err = h.db.Prepare("SELECT * FROM cloud_pocket")
+	stmt, err := h.db.Prepare("SELECT id,name FROM cloud_pocket")
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
@@ -43,9 +43,13 @@ func (h handler) GetCloudPockets(c echo.Context) error {
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, err)
 		}
+		balance, err := h.getBalance(pocket.Id)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+		pocket.Balance = balance
 		pockets = append(pockets, pocket)
 	}
-
 	return c.JSON(http.StatusOK, pockets)
 
 }
