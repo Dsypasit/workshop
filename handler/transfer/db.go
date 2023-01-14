@@ -3,6 +3,7 @@ package transfer
 import (
 	"database/sql"
 	"log"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -24,15 +25,7 @@ func (db *database) connectDatabase() {
 }
 
 func (db *database) createDatabase() {
-	createTB := `CREATE TABLE IF NOT EXISTS "txn" (
-		"id" int4 NOT NULL DEFAULT nextval('txn_id'::regclass)
-		"timestamp" TIMESTAMP NOT NULL,
-		"amount" NUMERIC NOT NULL,
-		"note" VARCHAR NOT NULL,
-		"sender" int4 NOT NULL,
-		"receiver" int4 NOTN NULL,
-		PRIMARY KEY ("id") 
-	)`
+	createTB := `CREATE TABLE IF NOT EXISTS txn ( id SERIAL PRIMARY KEY, timestamp TIMESTAMP, amount NUMERIC, note VARCHAR, sender INT, receiver INT)`
 
 	_, db.err = db.DB.Exec(createTB)
 	if db.err != nil {
@@ -40,6 +33,21 @@ func (db *database) createDatabase() {
 		log.Fatal("cant`t create table", db.err)
 	}
 	log.Println("Okey Database it Have Table")
+}
+
+func (db *database) InsertTransaction(trxReq TransferRequest) TransferResponse {
+	dtStamp := time.Now()
+	row := db.DB.QueryRow("INSERT INTO txn (timestamp, amount, note, sender, receiver) values ($1, $2, $3, $4, $5)", dtStamp, trxReq.Amount, trxReq.Note, trxReq.Sender, trxReq.Receiver)
+
+	resultTrxReq := TransferRequest{}
+	resultTrxRes := TransferResponse{}
+	db.err = row.Scan(&resultTrxRes.ID_transaction, &resultTrxRes.timestamp, &resultTrxRes.Amount, &resultTrxRes.Note, &resultTrxReq.Sender, &resultTrxReq.Receiver)
+	if db.err != nil {
+		log.Fatal("cant`t insert data", db.err)
+		return TransferResponse{}
+	}
+	log.Println("insert todo success id : ", resultTrxRes.ID_transaction)
+	return resultTrxRes
 }
 
 func (db *database) InitDatabase() {

@@ -2,6 +2,7 @@ package transfer
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	// "github.com/labstack/echo/v4/middleware"
@@ -16,10 +17,10 @@ type TransferRequest struct {
 }
 
 type TransferResponse struct {
-	ID_transaction int64 `json:"id"`
-	//timestamp      time.Time `json:"timestamp"`
-	Amount float64 `json:"amount"`
-	Note   string  `json:"note"`
+	ID_transaction int64     `json:"id"`
+	timestamp      time.Time `json:"timestamp"`
+	Amount         float64   `json:"amount"`
+	Note           string    `json:"note"`
 }
 
 type Err struct {
@@ -32,11 +33,13 @@ type Handler struct {
 
 func (h *Handler) TransferHandler(c echo.Context) error {
 	transfer := TransferRequest{}
+	h.Database.InitDatabase()
+	defer h.Database.CloseDatabase()
 	if err := c.Bind(&transfer); err != nil {
 		c.Logger().Error(err)
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, "ok")
-	//return c.JSON(http.StatusCreated, h.Database.InsertTransaction(transfer))
+	transferRes := h.Database.InsertTransaction(transfer)
+	return c.JSON(http.StatusCreated, transferRes)
 
 }
