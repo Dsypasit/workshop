@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreatePocketIT(t *testing.T) {
+func TestCreateAccountIT(t *testing.T) {
 	e := echo.New()
 
 	cfg := config.New().All()
@@ -23,18 +23,27 @@ func TestCreatePocketIT(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	cfgFlag := config.FeatureFlag{}
 
-	couldPocket := New(sql)
-	e.POST("/cloud-pockets", couldPocket.Create)
+	h = handler{&sql}
 
-	reqBody := `{"name": "test", "account_id" : 1}`
+	e.GET("/cloud-pockets/:id", h.GetCloundPocketById)
+	e.POST("/cloud-pockets", h.Creat)
+
+	reqBody := `{"name": "test"}`
 	req := httptest.NewRequest(http.MethodPost, "/cloud-pockets", strings.NewReader(reqBody))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 
 	e.ServeHTTP(rec, req)
 
-	expected := `{"id": 1, "name": "test"}`
+	req := httptest.NewRequest(http.MethodGet, "/clound-pockets/1", nil)
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+
+	e.ServeHTTP(rec, req)
+
+	expected := `{"id": 1, "name": "test", "balance": 0}`
 	assert.Equal(t, http.StatusCreated, rec.Code)
 	assert.JSONEq(t, expected, rec.Body.String())
 }

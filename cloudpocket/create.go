@@ -1,6 +1,8 @@
 package cloudpocket
 
 import (
+	"context"
+	"database/sql"
 	"net/http"
 
 	"github.com/kkgo-software-engineering/workshop/mlog"
@@ -9,17 +11,17 @@ import (
 )
 
 type PocketRequest struct {
-	Name string `json:"name"`
+	Name      string `json:"name"`
+	AccountId int64  `json:"account_id"`
 }
 
 type PocketResponse struct {
-	ID      int64   `json:"id"`
-	Name    string  `json:"name"`
-	Balance float32 `json:"balance"`
+	ID   int64  `json:"id"`
+	Name string `json:"name"`
 }
 
 const (
-	cStmt = "INSERT INTO cloud_pocket (name) VALUES ($1) RETURNING id, name"
+	cStmt = "INSERT INTO cloud_pocket (name, account_id) VALUES ($1, $2) RETURNING id"
 )
 
 func (h handler) Create(c echo.Context) error {
@@ -32,17 +34,27 @@ func (h handler) Create(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "bad request body", err.Error())
 	}
 
-	var resp PocketResponse
-	err = h.db.QueryRowContext(ctx, cStmt, req.Name).Scan(&resp.ID, &resp.Name)
+	var id int64
+	err = h.db.QueryRowContext(ctx, cStmt, req.Name, req.AccountId).Scan(&id)
 	if err != nil {
 		logger.Error("query row error", zap.Error(err))
 		return echo.NewHTTPError(http.StatusInternalServerError, "query row error", err.Error())
 	}
 
-	logger.Info("create pocket successfully", zap.Int64("id", resp.ID))
+	logger.Info("create pocket successfully", zap.Int64("id", id))
 
-	resp.Balance = 0
+	return c.JSON(http.StatusCreated, PocketResponse{
+		ID:   id,
+		Name: req.Name,
+	})
 
-	return c.JSON(http.StatusCreated, resp)
+}
 
+func InsertToPocketTable(tx *sql.Tx, ctx context.Context, name string, balance float64, accountId int) (int64, error) {
+	var id int64
+	err := tx.QueryRowContext(ctx, cStmt, name, accountId).Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
 }

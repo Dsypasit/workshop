@@ -10,9 +10,9 @@ CREATE TABLE IF NOT EXISTS "users" (
     "create_dtm" TIMESTAMP DEFAULT now(),
     "update_dtm" TIMESTAMP DEFAULT now(),
     PRIMARY KEY ("id")
-)
+);
 
-CREATE INDEX IF NOT EXISTS index_username ON users (username)
+CREATE INDEX IF NOT EXISTS index_username ON users (username);
 
 CREATE TABLE IF NOT EXISTS "accounts" (
     "id" int4 NOT NULL DEFAULT nextval('account_id'::regclass),
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS "cloud_pocket" (
     "update_dtm" TIMESTAMP DEFAULT now(),
     "delete_dtm" TIMESTAMP,
     PRIMARY KEY ("id")
-)
+);
 
 CREATE TABLE IF NOT EXISTS "txn" (
     "id" int4 NOT NULL DEFAULT nextval('txn_id'::regclass),
@@ -41,4 +41,4 @@ CREATE TABLE IF NOT EXISTS "txn" (
     "sender" int4 NOT NULL,
     "receiver" int4 NOT NULL,
     PRIMARY KEY ("id") 
-)
+);

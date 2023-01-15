@@ -10,6 +10,7 @@ require (
 	github.com/lib/pq v1.10.7
 	github.com/stretchr/testify v1.8.0
 	go.uber.org/zap v1.24.0
+	gorm.io/gorm v1.24.3
 )
 
 require (
