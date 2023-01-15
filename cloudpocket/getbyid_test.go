@@ -17,11 +17,9 @@ func TestGetCloundPocketById(t *testing.T) {
 		status int
 	}{
 		output: cloudpocket{
-			{
-				Id:      1,
-				Name:    "test1",
-				Balance: 300.0,
-			},
+			Id:      1,
+			Name:    "test1",
+			Balance: 300.0,
 		},
 		status: http.StatusOK,
 	}
