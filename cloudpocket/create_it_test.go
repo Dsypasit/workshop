@@ -27,14 +27,14 @@ func TestCreatePocketIT(t *testing.T) {
 	couldPocket := New(sql)
 	e.POST("/cloud-pockets", couldPocket.Create)
 
-	reqBody := `{"name": "test"}`
+	reqBody := `{"name": "test", "account_id" : 1}`
 	req := httptest.NewRequest(http.MethodPost, "/cloud-pockets", strings.NewReader(reqBody))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 
 	e.ServeHTTP(rec, req)
 
-	expected := `{"id": 1, "name": "test", "balance": 0}`
+	expected := `{"id": 1, "name": "test"}`
 	assert.Equal(t, http.StatusCreated, rec.Code)
 	assert.JSONEq(t, expected, rec.Body.String())
 }

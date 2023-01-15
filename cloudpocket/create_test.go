@@ -29,13 +29,13 @@ func TestCreatePocket(t *testing.T) {
 				if err != nil {
 					return nil, err
 				}
-				row := sqlmock.NewRows([]string{"id", "name"}).AddRow(1, "pocket-name")
-				mock.ExpectQuery(cStmt).WithArgs("pocket-name").WillReturnRows(row)
+				row := sqlmock.NewRows([]string{"id"}).AddRow(1)
+				mock.ExpectQuery(cStmt).WithArgs("pocket-name", 1).WillReturnRows(row)
 				return db, err
 			},
-			`{"name": "pocket-name"}`,
+			`{"name": "pocket-name", "account_id" : 1}`,
 			http.StatusCreated,
-			`{"id": 1, "name": "pocket-name", "balance": 0}`,
+			`{"id": 1, "name": "pocket-name"}`,
 		},
 	}
 
