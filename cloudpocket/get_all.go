@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/shopspring/decimal"
 )
 
 type handler struct {
@@ -12,9 +13,9 @@ type handler struct {
 }
 
 type cloudpocket struct {
-	Id      int     `json:"id"`
-	Name    string  `json:"name"`
-	Balance float32 `json:"balance"`
+	Id      int             `json:"id"`
+	Name    string          `json:"name"`
+	Balance decimal.Decimal `json:"balance"`
 }
 
 func New(db *sql.DB) *handler {

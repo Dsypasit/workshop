@@ -5,22 +5,23 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/shopspring/decimal"
 	// "github.com/labstack/echo/v4/middleware"
 	// "github.com/lib/pq"
 )
 
 type TransferRequest struct {
-	Sender   int64   `json:"sender"`
-	Receiver int64   `json:"receiver"`
-	Amount   float64 `json:"amount"`
-	Note     string  `json:"note"`
+	Sender   int64           `json:"sender"`
+	Receiver int64           `json:"receiver"`
+	Amount   decimal.Decimal `json:"amount"`
+	Note     string          `json:"note"`
 }
 
 type TransferResponse struct {
-	ID_transaction int64     `json:"id"`
-	timestamp      time.Time `json:"timestamp"`
-	Amount         float64   `json:"amount"`
-	Note           string    `json:"note"`
+	ID_transaction int64           `json:"id"`
+	timestamp      time.Time       `json:"timestamp"`
+	Amount         decimal.Decimal `json:"amount"`
+	Note           string          `json:"note"`
 }
 
 type Err struct {

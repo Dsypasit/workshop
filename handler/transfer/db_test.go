@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -24,8 +25,8 @@ func TestCreateDatabase(t *testing.T) {
 
 func TestInsertTransaction(t *testing.T) {
 	//Arrenge
-	trxInsert := TransferRequest{Sender: 0, Receiver: 1, Amount: 100, Note: "note from req_transaction_want"}
-	trxWant := TransferResponse{ID_transaction: 1, Amount: 100, Note: "note from req_transaction_want"}
+	trxInsert := TransferRequest{Sender: 0, Receiver: 1, Amount: decimal.NewFromInt(100), Note: "note from req_transaction_want"}
+	trxWant := TransferResponse{ID_transaction: 1, Amount: decimal.NewFromInt(100), Note: "note from req_transaction_want"}
 	db, mock, _ := sqlmock.New()
 	row := sqlmock.NewRows([]string{"id", "amount", "note", "sender", "receiver"}).AddRow(1, 100, "note from req_transaction_want", 0, 1)
 	mock.ExpectQuery("INSERT INTO txn").WithArgs(trxInsert.Amount, trxInsert.Note, trxInsert.Sender, trxInsert.Receiver).WillReturnRows(row)

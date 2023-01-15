@@ -1,21 +1,17 @@
 package cloudpocket
 
 import (
-	"bytes"
 	"database/sql"
-	"encoding/json"
-	"fmt"
-	"io"
-	"log"
-	"net"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
 
+	"github.com/kkgo-software-engineering/workshop/config"
 	"github.com/labstack/echo/v4"
 	_ "github.com/lib/pq"
+	"github.com/stretchr/testify/assert"
 )
+
 const (
 	testStmt = "INSERT INTO cloud_pocket (name, account_id) VALUES ($1, $2) RETURNING id"
 )
@@ -38,13 +34,6 @@ func TestGetByID(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/cloud-pockets/1", nil)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
-
-	//c := e.NewContext(req, rec)
-	//c.SetPath("/:id")
-	//c.SetParamNames("id")
-	//c.SetParamValues("1")
-
-	//h.GetCloudPocketById(c)
 
 	e.ServeHTTP(rec, req)
 

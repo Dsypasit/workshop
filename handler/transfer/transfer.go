@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/shopspring/decimal"
 )
 
 type handler struct {
@@ -13,12 +14,12 @@ type handler struct {
 }
 
 type transaction struct {
-	Id        int       `json:"id"`
-	Timestamp time.Time `json:"timestamp"`
-	Amount    float32   `json:"amount"`
-	Note      string    `json:"note"`
-	Sender    string    `json:"sender"`
-	Receiver  string    `json:"receiver"`
+	Id        int             `json:"id"`
+	Timestamp time.Time       `json:"timestamp"`
+	Amount    decimal.Decimal `json:"amount"`
+	Note      string          `json:"note"`
+	Sender    string          `json:"sender"`
+	Receiver  string          `json:"receiver"`
 }
 
 func New(db *sql.DB) *handler {
@@ -36,7 +37,7 @@ func (h handler) CreateTransfer(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
 	}
-	if balance < txn.Amount {
+	if txn.Amount.GreaterThan(balance) {
 		return c.JSON(http.StatusBadRequest, Err{Message: "balance not enough"})
 	}
 

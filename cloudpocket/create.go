@@ -8,6 +8,8 @@ import (
 	"github.com/kkgo-software-engineering/workshop/mlog"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
+	"github.com/shopspring/decimal"
+
 )
 
 type PocketRequest struct {
@@ -50,7 +52,7 @@ func (h handler) Create(c echo.Context) error {
 
 }
 
-func InsertToPocketTable(tx *sql.Tx, ctx context.Context, name string, balance float64, accountId int) (int64, error) {
+func InsertToPocketTable(tx *sql.Tx, ctx context.Context, name string, balance decimal.Decimal, accountId int) (int64, error) {
 	var id int64
 	err := tx.QueryRowContext(ctx, cStmt, name, accountId).Scan(&id)
 	if err != nil {
