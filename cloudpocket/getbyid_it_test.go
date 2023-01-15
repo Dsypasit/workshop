@@ -1,9 +1,13 @@
+//go:build integration
+// +build integration
+
 package cloudpocket
 
 import (
 	"database/sql"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/kkgo-software-engineering/workshop/config"
@@ -18,8 +22,8 @@ const (
 
 func TestGetByID(t *testing.T) {
 
-	cfg := config.New().All()
-	sql, err := sql.Open("postgres", cfg.DBConnection)
+	// cfg := config.New().All()
+	sql, err := sql.Open("postgres", os.Getenv("DB_CONNECTION"))
 	if err != nil {
 		t.Error(err)
 	}
