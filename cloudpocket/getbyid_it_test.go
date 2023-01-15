@@ -1,29 +1,28 @@
+//go:build integration
+// +build integration
+
 package cloudpocket
 
 import (
-	"bytes"
 	"database/sql"
-	"encoding/json"
-	"fmt"
-	"io"
-	"log"
-	"net"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
-	"time"
 
 	"github.com/labstack/echo/v4"
 	_ "github.com/lib/pq"
+	"github.com/stretchr/testify/assert"
 )
+
 const (
 	testStmt = "INSERT INTO cloud_pocket (name, account_id) VALUES ($1, $2) RETURNING id"
 )
 
 func TestGetByID(t *testing.T) {
 
-	cfg := config.New().All()
-	sql, err := sql.Open("postgres", cfg.DBConnection)
+	// cfg := config.New().All()
+	sql, err := sql.Open("postgres", os.Getenv("DB_CONNECTION"))
 	if err != nil {
 		t.Error(err)
 	}

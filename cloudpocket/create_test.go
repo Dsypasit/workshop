@@ -1,4 +1,5 @@
-//go:buid unit
+//go:build unit
+// +build unit
 
 package cloudpocket
 
