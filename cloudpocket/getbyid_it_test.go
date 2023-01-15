@@ -10,7 +10,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/kkgo-software-engineering/workshop/config"
 	"github.com/labstack/echo/v4"
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/assert"
