@@ -40,7 +40,7 @@ const (
 
 const (
 	dPort         = 1323
-	dDBConnection = "postgresql://postgres:password@localhost:5432/banking?sslmode=disable"
+	dDBConnection = "postgresql://group-4:group-4-pass@database-1.c7bdavepehea.ap-southeast-1.rds.amazonaws.com/group-4-dev"
 )
 
 func (c *cfg) All() Config {

@@ -24,9 +24,14 @@ func TestGetCloundPocketById(t *testing.T) {
 		status: http.StatusOK,
 	}
 
+	newsMockBalance := sqlmock.NewRows([]string{"balance"}).AddRow(100.23)
+	newsMockBalance1 := sqlmock.NewRows([]string{"balance"}).AddRow(100.43)
+
 	db, mock, _ := sqlmock.New()
 	row := sqlmock.NewRows([]string{"id", "name", "balance"}).AddRow(1, "test1", 300.0)
 	mock.ExpectPrepare("SELECT \\* FROM cloud_pocket").ExpectQuery().WithArgs(1).WillReturnRows(row)
+	mock.ExpectPrepare("^select[a-zA-Z0-9() ,.=$-]+SUM[a-zA-Z0-9() ,.=$-]+as balance").ExpectQuery().WithArgs(0).WillReturnRows(newsMockBalance)
+	mock.ExpectPrepare("^select[a-zA-Z0-9() ,.=$-]+SUM[a-zA-Z0-9() ,.=$-]+as balance").ExpectQuery().WithArgs(1).WillReturnRows(newsMockBalance1)
 	myhandler := handler{db}
 
 	e := echo.New()
