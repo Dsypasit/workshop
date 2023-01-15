@@ -14,13 +14,9 @@ CREATE TABLE IF NOT EXISTS "users" (
 
 CREATE INDEX IF NOT EXISTS index_username ON users (username);
 
-CREATE TABLE IF NOT EXISTS "accounts" (
+CREATE TABLE "accounts" (
     "id" int4 NOT NULL DEFAULT nextval('account_id'::regclass),
-    "balance" float8 NOT NULL DEFAULT 0, 
-    "name" TEXT  NULL DEFAULT '',
-    "user_id" int4 NOT NULL,
-    "create_dtm" TIMESTAMP DEFAULT now(),
-    "update_dtm" TIMESTAMP DEFAULT now(),
+    "balance" float8 NOT NULL DEFAULT 0,
     PRIMARY KEY ("id")
 );
 
