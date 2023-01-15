@@ -3,7 +3,6 @@ package transfer
 import (
 	"database/sql"
 	"log"
-	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -36,12 +35,11 @@ func (db *database) createDatabase() {
 }
 
 func (db *database) InsertTransaction(trxReq TransferRequest) TransferResponse {
-	dtStamp := time.Now()
-	row := db.DB.QueryRow("INSERT INTO txn (timestamp, amount, note, sender, receiver) values ($1, $2, $3, $4, $5)", dtStamp, trxReq.Amount, trxReq.Note, trxReq.Sender, trxReq.Receiver)
+	row := db.DB.QueryRow("INSERT INTO txn (amount, note, sender, receiver) values ($1, $2, $3, $4)", trxReq.Amount, trxReq.Note, trxReq.Sender, trxReq.Receiver)
 
 	resultTrxReq := TransferRequest{}
 	resultTrxRes := TransferResponse{}
-	db.err = row.Scan(&resultTrxRes.ID_transaction, &resultTrxRes.timestamp, &resultTrxRes.Amount, &resultTrxRes.Note, &resultTrxReq.Sender, &resultTrxReq.Receiver)
+	db.err = row.Scan(&resultTrxRes.ID_transaction, &resultTrxRes.Amount, &resultTrxRes.Note, &resultTrxReq.Sender, &resultTrxReq.Receiver)
 	if db.err != nil {
 		log.Fatal("cant`t insert data", db.err)
 		return TransferResponse{}
