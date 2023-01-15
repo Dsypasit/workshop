@@ -34,7 +34,7 @@ func TestGetAll(t *testing.T) {
 	e := echo.New()
 	c := e.NewContext(req, rec)
 
-	expected := "[{\"id\":0,\"name\":\"cashbox\",\"balance\":100.23},{\"id\":1,\"name\":\"test1\",\"balance\":100.43}]\n"
+	expected := "[{\"id\":0,\"name\":\"cashbox\",\"balance\":\"100.23\"},{\"id\":1,\"name\":\"test1\",\"balance\":\"100.43\"}]\n"
 
 	// Act
 	err := h.GetCloudPockets(c)
