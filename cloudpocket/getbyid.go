@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (h handler) GetCloudPocketById(c echo.Context) error {
+func (h *handler) GetCloudPocketById(c echo.Context) error {
 	id := c.Param("id")
 	pocket := cloudpocket{}
 	stmt, err := h.db.Prepare("SELECT id,name FROM cloud_pocket WHERE id=$1")

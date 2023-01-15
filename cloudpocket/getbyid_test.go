@@ -1,3 +1,5 @@
+//go:build unit
+
 package cloudpocket
 
 import (
@@ -29,7 +31,7 @@ func TestGetCloundPocketById(t *testing.T) {
 
 	db, mock, _ := sqlmock.New()
 	row := sqlmock.NewRows([]string{"id", "name", "balance"}).AddRow(1, "test1", 300.0)
-	mock.ExpectPrepare("SELECT \\* FROM cloud_pocket").ExpectQuery().WithArgs(1).WillReturnRows(row)
+	mock.ExpectPrepare("SELECT id,name FROM cloud_pocket").ExpectQuery().WithArgs(1).WillReturnRows(row)
 	mock.ExpectPrepare("^select[a-zA-Z0-9() ,.=$-]+SUM[a-zA-Z0-9() ,.=$-]+as balance").ExpectQuery().WithArgs(0).WillReturnRows(newsMockBalance)
 	mock.ExpectPrepare("^select[a-zA-Z0-9() ,.=$-]+SUM[a-zA-Z0-9() ,.=$-]+as balance").ExpectQuery().WithArgs(1).WillReturnRows(newsMockBalance1)
 	myhandler := handler{db}
