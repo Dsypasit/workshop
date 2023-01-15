@@ -10,7 +10,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/kkgo-software-engineering/workshop/config"
 	"github.com/labstack/echo/v4"
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/assert"
@@ -41,7 +40,7 @@ func TestGetByID(t *testing.T) {
 
 	e.ServeHTTP(rec, req)
 
-	expected := `{"id": 1, "name": "test", "balance": 0}`
+	expected := `{"id": 1, "name": "test", "balance": "0"}`
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, expected, rec.Body.String())
 }
