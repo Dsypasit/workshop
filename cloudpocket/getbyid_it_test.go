@@ -6,7 +6,6 @@ import (
 	"database/sql"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 
 	"github.com/kkgo-software-engineering/workshop/config"
@@ -15,35 +14,39 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateAccountIT(t *testing.T) {
-	e := echo.New()
+const (
+	testStmt = "INSERT INTO cloud_pocket (name, account_id) VALUES ($1, $2) RETURNING id"
+)
+
+func TestGetByID(t *testing.T) {
 
 	cfg := config.New().All()
 	sql, err := sql.Open("postgres", cfg.DBConnection)
 	if err != nil {
 		t.Error(err)
 	}
-	cfgFlag := config.FeatureFlag{}
 
-	h = handler{&sql}
+	_ = sql.QueryRow(testStmt, "test", 1).Scan()
 
-	e.GET("/cloud-pockets/:id", h.GetCloundPocketById)
-	e.POST("/cloud-pockets", h.Creat)
+	h := New(sql)
 
-	reqBody := `{"name": "test"}`
-	req := httptest.NewRequest(http.MethodPost, "/cloud-pockets", strings.NewReader(reqBody))
+	e := echo.New()
+	e.GET("/cloud-pockets/:id", h.GetCloudPocketById)
+
+	req := httptest.NewRequest(http.MethodGet, "/cloud-pockets/1", nil)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 
-	e.ServeHTTP(rec, req)
+	//c := e.NewContext(req, rec)
+	//c.SetPath("/:id")
+	//c.SetParamNames("id")
+	//c.SetParamValues("1")
 
-	req := httptest.NewRequest(http.MethodGet, "/clound-pockets/1", nil)
-	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	rec := httptest.NewRecorder()
+	//h.GetCloudPocketById(c)
 
 	e.ServeHTTP(rec, req)
 
 	expected := `{"id": 1, "name": "test", "balance": 0}`
-	assert.Equal(t, http.StatusCreated, rec.Code)
+	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, expected, rec.Body.String())
 }
