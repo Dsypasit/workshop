@@ -3,6 +3,7 @@ package transfer
 import (
 	"database/sql"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -12,35 +13,42 @@ type handler struct {
 }
 
 type transaction struct {
-	Id        int     `json:"id"`
-	Timestamp string  `json:"timestamp"`
-	Amount    float32 `json:"amount"`
-	Note      string  `json:"note"`
-	Sender    string  `json:"sender"`
-	Receiver  string  `json:"receiver"`
+	Id        int       `json:"id"`
+	Timestamp time.Time `json:"timestamp"`
+	Amount    float32   `json:"amount"`
+	Note      string    `json:"note"`
+	Sender    string    `json:"sender"`
+	Receiver  string    `json:"receiver"`
 }
 
 func New(db *sql.DB) *handler {
 	return &handler{db}
 }
 
-/*func (h handler) CreateTransfer(c echo.Context) error {
-	exp := TransferRequest{}
-	err := c.Bind(&exp)
+func (h handler) CreateTransfer(c echo.Context) error {
+	txn := transaction{}
+	err := c.Bind(&txn)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, Err{Message: "The request could not be found:" + err.Error()})
 	}
 
-	convtags := exp.Tags
-	row := db.QueryRow("INSERT INTO expenses (title, amount, note, tags) values ($1, $2, $3, $4)  RETURNING id", exp.Title, exp.Amount, exp.Note, pq.Array(convtags))
-	err = row.Scan(&exp.ID)
+	balance, err := h.getBalance(txn.Sender)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
+	}
+	if balance < txn.Amount {
+		return c.JSON(http.StatusBadRequest, Err{Message: "balance not enough"})
+	}
+
+	row := h.db.QueryRow("INSERT INTO txn (amount, note, sender, receiver) values ($1, $2, $3, $4)  RETURNING id,timstamp", txn.Amount, txn.Note, txn.Sender, txn.Receiver)
+	err = row.Scan(&txn.Id, &txn.Timestamp)
+
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
 	}
 
-	return c.JSON(http.StatusCreated, exp)
+	return c.JSON(http.StatusCreated, txn)
 }
-*/
 
 func (h *handler) GetTransaction(c echo.Context) error {
 	txns := []transaction{}

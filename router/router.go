@@ -37,8 +37,9 @@ func RegRoute(cfg config.Config, logger *zap.Logger, db *sql.DB) *echo.Echo {
 
 	txn := transfer.New(db)
 	e.GET("/transactions", txn.GetTransaction)
+	e.POST("/transactions", txn.CreateTransfer)
 	e.GET("/transactions/:id", txn.GetTransactionByPocketId)
-  
+
 	couldPocket := cloudpocket.New(db)
 	e.GET("/cloud-pockets", couldPocket.GetCloudPockets)
 	e.GET("/cloud-pockets/:id", couldPocket.GetCloudPocketById)

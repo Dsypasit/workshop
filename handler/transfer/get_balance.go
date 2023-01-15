@@ -1,10 +1,10 @@
-package cloudpocket
+package transfer
 
 import (
 	"database/sql"
 )
 
-func (h *handler) getBalance(id int) (float32, error) {
+func (h *handler) getBalance(id string) (float32, error) {
 
 	var err error
 	var stmt *sql.Stmt
